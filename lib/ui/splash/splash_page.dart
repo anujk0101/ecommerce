@@ -28,7 +28,7 @@ String loggedInUserId='';
 
   loggedInUserCheck(){
     if(loggedInUserId == ''){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginPage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
     }
     else{
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
