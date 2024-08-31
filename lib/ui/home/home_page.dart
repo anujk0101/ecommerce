@@ -24,6 +24,7 @@ class HomePage extends StatelessWidget {
                       backgroundColor: AppColor.greyColor,
                       radius: 25,
                     ),
+
                     CircleAvatar(
                       child: Icon(
                         Icons.notifications_outlined,
@@ -59,7 +60,7 @@ class HomePage extends StatelessWidget {
                   height: 15,
                 ),
                 Container(
-                  height: 200,
+                  height: 150,
                   child: ListView.builder(
                       itemCount: CatagoryItem.mCategories.length,
                       scrollDirection: Axis.horizontal,
@@ -76,15 +77,13 @@ class HomePage extends StatelessWidget {
                                 width: 80.0,
                                 height: 80.0,
                               )),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${CatagoryItem.mCategories[index].catName}",
-                                    style: TextStyle(fontSize: 15),
-                                    //overflow: TextOverflow.clip,
-                                  ),
-                                ],
+                              SizedBox(
+                                width: 95,
+                                child: Text(
+                                  "${CatagoryItem.mCategories[index].catName}",textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15),
+                                  //overflow: TextOverflow.clip,
+                                ),
                               )
                             ],
                           ),
@@ -92,13 +91,13 @@ class HomePage extends StatelessWidget {
                       }),
                 ),
                 SizedBox(
-                  height: 25,
+                  height: 1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Special For you",
+                      "Speciall For you",
                       style: TextStyle(fontSize: 25),
                     ),
                     TextButton(

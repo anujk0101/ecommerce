@@ -20,7 +20,7 @@ String loggedInUserId='';
     super.initState();
     Timer(Duration(seconds: 1),()async{
       var prefs=AppPref();
-      prefs.initPrefs();
+      await prefs.initPrefs();
       loggedInUserId = prefs.getUserId();
       loggedInUserCheck();
     });
@@ -28,7 +28,7 @@ String loggedInUserId='';
 
   loggedInUserCheck(){
     if(loggedInUserId == ''){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginPage()));
     }
     else{
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
