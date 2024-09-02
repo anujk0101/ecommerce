@@ -1,10 +1,38 @@
+import 'package:ecommerce/data/models/cat_model.dart';
 import 'package:ecommerce/domain/app_color.dart';
+import 'package:ecommerce/domain/app_pref.dart';
 import 'package:ecommerce/domain/catagory_item.dart';
+import 'package:ecommerce/ui/home/homepage_bloc/home_bloc.dart';
+import 'package:ecommerce/ui/home/homepage_bloc/home_event.dart';
+import 'package:ecommerce/ui/home/homepage_bloc/home_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+String? tokanSharedPrefs;
+//CatModel? cModel;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getTotan();
+
+  }
+
+  getTotan() async{
+    var pref=AppPref();
+    await pref.initPrefs();
+     tokanSharedPrefs=pref.getUserId();
+    context.read<HomeBloc>().add(FetchCategoryItemEvent(tokan: tokanSharedPrefs));
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -35,6 +63,7 @@ class HomePage extends StatelessWidget {
                     )
                   ],
                 ),
+
                 SizedBox(
                   height: 11,
                 ),
@@ -59,7 +88,7 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: 15,
                 ),
-                Container(
+                /*Container(
                   height: 150,
                   child: ListView.builder(
                       itemCount: CatagoryItem.mCategories.length,
@@ -89,7 +118,51 @@ class HomePage extends StatelessWidget {
                           ),
                         );
                       }),
-                ),
+                ),*/
+
+                BlocBuilder<HomeBloc,HomeState>(builder: (_,state){
+                  if(state is HomeLoadingState){
+                    return CircularProgressIndicator();
+                  }
+                  else if(state is HomeFailedState){
+                    return Text("error: ${state.errorMsg}");
+                  }
+                  else if(state is HomeSuccessState){
+                    return Container(
+                      height: 150,
+                      child: ListView.builder(
+                          itemCount: state.cModel.data!.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (_, index) {
+                            return Container(
+                              width: 95,
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Column(
+                                children: [
+                                /*  ClipOval(
+                                      child: Image.asset(
+                                        "${CatagoryItem.mCategories[index].catImgUrl}",
+                                        fit: BoxFit.cover,
+                                        width: 80.0,
+                                        height: 80.0,
+                                      )),*/
+                                  SizedBox(
+                                    width: 95,
+                                    child: Text(
+                                      "${state.cModel.data![index]!.name}",textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 15),
+                                      //overflow: TextOverflow.clip,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          }),
+                    );
+                  }
+                  return Container();
+                }),
+
                 SizedBox(
                   height: 1,
                 ),

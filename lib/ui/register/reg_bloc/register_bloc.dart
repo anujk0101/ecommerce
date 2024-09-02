@@ -11,11 +11,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   RegisterBloc({required this.apiHelper}) : super(RegisterInitialState()) {
 
     on<RegisterNewUser>((event, emit) async{
-      print("URL: ${Urls.REGISTER_USER}");
+
       emit(RegisterLoadingState());
 
       try {
-        print("URL: ${Urls.REGISTER_USER}");
         var resJson =await apiHelper.postAPI(
             url: Urls.REGISTER_USER, rUserModel: event.rUserModel);
         if(resJson['status']){
@@ -24,9 +23,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           emit(RegisterFailedState(errorMsg: resJson['message']));
         }
       } catch (e) {
-        print("error: ${e.toString()}");
         emit(RegisterFailedState(errorMsg: (e as AppException).toError()));
-
       }
     });
   }

@@ -4,6 +4,9 @@ import 'package:ecommerce/domain/app_pref.dart';
 import 'package:ecommerce/domain/remote/api_helper.dart';
 import 'package:ecommerce/ui/home/home_page.dart';
 import 'package:ecommerce/data/models/user_model.dart';
+import 'package:ecommerce/ui/login/login_bloc/signin_bloc.dart';
+import 'package:ecommerce/ui/login/login_bloc/signin_event.dart';
+import 'package:ecommerce/ui/login/login_bloc/signin_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as httpClient;
@@ -14,7 +17,7 @@ class LoginPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   UserModel? uModel;
-
+  bool isSuccess=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +76,35 @@ class LoginPage extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            ElevatedButton(
+            StatefulBuilder(builder: (_,sS){
+              return BlocListener<SigninBloc,SigninState>(listener: (_,state) async{
+                if(state is SigninLoadingState){
+                  isSuccess=true;
+                  sS((){});
+                }
+                else if(state is SigninErrorState){
+                  isSuccess=false;
+                  sS((){});
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${state.errorMsg}')));
+                }
+                else if(state is SigninLoadedState){
+                  isSuccess=false;
+                  sS((){});
+                  var appPrefs=AppPref();
+                  await appPrefs.initPrefs();
+                  appPrefs.setUserId(state.uModel.tokan);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
+                }
+              },child: isSuccess ? Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(), SizedBox(width: 11,),
+                  Text("Signing In")
+                ],) : ElevatedButton(onPressed: (){
+                  context.read<SigninBloc>().add(LoginUserEvent(sUserDetails: {"email": emailController.text.toString(),"password":passController.text.toString()}));
+              }, child: Text("Sign In")),);
+            }),
+
+          /*  ElevatedButton(
                 onPressed: () async {
                   UserModel? uModelData = await userLogin();
                   if (uModelData != null) {
@@ -87,17 +118,16 @@ class LoginPage extends StatelessWidget {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (_) => HomePage()));
                     }
-                    /*try {} catch (e) {}*/
                   }
                 },
-                child: Text("Sign In")),
+                child: Text("Sign In")),*/
           ],
         ),
       ),
     );
   }
 
-  Future<UserModel?> userLogin() async {
+  /*Future<UserModel?> userLogin() async {
     String url = "https://www.marketcraft.in/ecommerce-api/user/login";
 
     var res = await httpClient.post(Uri.parse(url),
@@ -119,5 +149,5 @@ class LoginPage extends StatelessWidget {
     } else {
       return null;
     }
-  }
+  }*/
 }

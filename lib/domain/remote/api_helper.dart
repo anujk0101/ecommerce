@@ -21,6 +21,34 @@ class ApiHelper{
     }
   }
 
+  Future<dynamic> postApiLogin({required String url,required Map<String,dynamic> loginCredential}) async{
+    var uri=Uri.parse(url);
+
+    try{
+
+      var res=await httpClient.post(uri,body: jsonEncode(loginCredential));
+      return returnJsonResponse(res);
+
+    } on SocketException catch(e){
+      throw (FetchDataException(errorMsg: "No Internet!!!"));
+    }
+  }
+
+
+  Future<dynamic> getCat({required String url, required String token}) async{
+    var uri=Uri.parse(url);
+
+    try{
+      var res=await httpClient.get(uri,headers: {
+        "Authorization" : "Bearer ${token}"
+      });
+      return returnJsonResponse(res);
+
+    } on SocketException catch(e){
+      throw (FetchDataException(errorMsg: "No Internet!!!"));
+    }
+  }
+
   dynamic returnJsonResponse(httpClient.Response response){
   switch(response.statusCode){
 

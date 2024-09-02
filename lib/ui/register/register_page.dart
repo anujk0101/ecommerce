@@ -156,6 +156,7 @@ class RegisterPage extends StatelessWidget {
                   },
                   child: isLoading
                       ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircularProgressIndicator(),
                             SizedBox(

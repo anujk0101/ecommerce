@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:ecommerce/domain/app_pref.dart';
+import 'package:ecommerce/domain/remote/api_helper.dart';
 import 'package:ecommerce/ui/home/home_page.dart';
+import 'package:ecommerce/ui/login/login_bloc/signin_bloc.dart';
 import 'package:ecommerce/ui/login/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashPage extends StatefulWidget {
 
@@ -28,7 +31,7 @@ String loggedInUserId='';
 
   loggedInUserCheck(){
     if(loggedInUserId == ''){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginPage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginPage(),));
     }
     else{
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
