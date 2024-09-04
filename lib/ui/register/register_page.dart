@@ -139,41 +139,50 @@ class RegisterPage extends StatelessWidget {
             //
             StatefulBuilder(
               builder: (_, sS) {
-                return BlocListener<RegisterBloc,RegisterState>(
+                return BlocListener<RegisterBloc, RegisterState>(
                   listener: (_, state) {
                     if (state is RegisterLoadingState) {
                       isLoading = true;
-                      sS((){});
+                      sS(() {});
                     } else if (state is RegisterSuccessState) {
                       isLoading = false;
-                      sS((){});
+                      sS(() {});
                       Navigator.pop(context);
                     } else if (state is RegisterFailedState) {
                       isLoading = false;
-                      sS((){});
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${state.errorMsg}')));
+                      sS(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('${state.errorMsg}')));
                     }
                   },
                   child: isLoading
                       ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(
-                              width: 11,
-                            ),
-                            Text("Registering"),
-                          ],
-                        )
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        width: 11,
+                      ),
+                      Text("Registering"),
+                    ],
+                  )
                       : ElevatedButton(
-                          //
-                          child: Text("Register"),
-                          onPressed: () {
-                            if (passController.text.toString() ==
-                                confirmPassController.text.toString()) {
-                              context.read<RegisterBloc>().add(RegisterNewUser(rUserModel: RegisterUserModel(name: nameController.text.toString(), email: emailController.text.toString(), mobile_number: mobileController.text.toString(), password: passController.text.toString())));
+                    //
+                    child: Text("Register"),
+                    onPressed: () {
+                      if (passController.text.toString() ==
+                          confirmPassController.text.toString()) {
+                        context.read<RegisterBloc>().add(RegisterNewUser(
+                            rUserModel: {
+                              "name": nameController.text.toString(),
+                              "email": emailController.text.toString(),
+                              "mobile_number": mobileController.text.toString(),
+                              "password": passController.text.toString()
+                            })
+                      );
 
-                             /* context.read<RegisterBloc>().add(RegisterNewUser(rUserModel:
+
+                      /* context.read<RegisterBloc>().add(RegisterNewUser(rUserModel:
                                   {
                                 'name' : nameController.text.toString(),
                                 'email' : emailController.text.toString(),
@@ -181,9 +190,9 @@ class RegisterPage extends StatelessWidget {
                                 'pass' : passController.text.toString()
                               }
                               ));*/
-                            }
-                          },
-                        ),
+                    }
+                    },
+                  ),
                 );
               },
             ),

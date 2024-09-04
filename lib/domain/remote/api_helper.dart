@@ -5,15 +5,17 @@ import 'package:ecommerce/data/models/register_user_model.dart';
 import 'package:ecommerce/domain/app_exception.dart';
 import 'package:http/http.dart' as httpClient;
 
+import '../app_pref.dart';
+
 class ApiHelper{
-
-  Future<dynamic> postAPI({required String url,required RegisterUserModel rUserModel}) async{
-  //Future<dynamic> postAPI({required String url,required Map<String,dynamic> rUserModel}) async{
+String? token;
+  //Future<dynamic> postAPI({required String url,required RegisterUserModel rUserModel}) async{
+  Future<dynamic> postAPI({required String url, Map<String,dynamic>? rUserModel}) async{
     var uri=Uri.parse(url);
 
     try{
 
-      var res=await httpClient.post(uri,body: jsonEncode(rUserModel.toMap()));
+      var res=await httpClient.post(uri,body: jsonEncode(rUserModel));
       return returnJsonResponse(res);
 
     } on SocketException catch(e){
@@ -21,24 +23,15 @@ class ApiHelper{
     }
   }
 
-  Future<dynamic> postApiLogin({required String url,required Map<String,dynamic> loginCredential}) async{
+  Future<dynamic> getCat({required String url, bool isHeaderRequired=false}) async{
     var uri=Uri.parse(url);
 
     try{
-
-      var res=await httpClient.post(uri,body: jsonEncode(loginCredential));
-      return returnJsonResponse(res);
-
-    } on SocketException catch(e){
-      throw (FetchDataException(errorMsg: "No Internet!!!"));
-    }
-  }
-
-
-  Future<dynamic> getCat({required String url, required String token}) async{
-    var uri=Uri.parse(url);
-
-    try{
+      if(isHeaderRequired){
+        var pref=AppPref();
+        await pref.initPrefs();
+        token=pref.getUserId();
+      }
       var res=await httpClient.get(uri,headers: {
         "Authorization" : "Bearer ${token}"
       });

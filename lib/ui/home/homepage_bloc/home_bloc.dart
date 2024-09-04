@@ -13,7 +13,7 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
     on<FetchCategoryItemEvent>((event,emit) async{
       emit(HomeLoadingState());
       try {
-        var res = await apiHelper.getCat(url: Urls.CATEGORIES,token: event.tokan!);
+        var res = await apiHelper.getCat(url: Urls.CATEGORIES,isHeaderRequired: event.isTokan);
         if(res['status']){
             emit(HomeSuccessState(cModel: CatModel.fromMap(res)));
         }

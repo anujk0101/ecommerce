@@ -28,7 +28,7 @@ String? tokanSharedPrefs;
     var pref=AppPref();
     await pref.initPrefs();
      tokanSharedPrefs=pref.getUserId();
-    context.read<HomeBloc>().add(FetchCategoryItemEvent(tokan: tokanSharedPrefs));
+    context.read<HomeBloc>().add(FetchCategoryItemEvent(isTokan: true));
   }
   @override
   Widget build(BuildContext context) {

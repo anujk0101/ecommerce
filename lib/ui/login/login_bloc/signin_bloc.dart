@@ -16,7 +16,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
       emit(SigninLoadingState());
 
       try{
-       var jsonResponse= await apiHelper.postApiLogin(url: Urls.LOGIN_USER, loginCredential: event.sUserDetails);
+       var jsonResponse= await apiHelper.postAPI(url: Urls.LOGIN_USER, rUserModel: event.sUserDetails);
       if(jsonResponse['status']){
         UserModel userModel=UserModel.fromMap(jsonResponse);
         emit(SigninLoadedState(uModel: userModel));
