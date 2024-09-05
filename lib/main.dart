@@ -1,4 +1,5 @@
 import 'package:ecommerce/ui/home/homepage_bloc/home_bloc.dart';
+import 'package:ecommerce/ui/home/prodoucts_bloc/product_bloc.dart';
 import 'package:ecommerce/ui/login/login_bloc/signin_bloc.dart';
 import 'package:ecommerce/ui/login/login_page.dart';
 import 'package:ecommerce/ui/register/register_page.dart';
@@ -21,6 +22,9 @@ void main() {
       ),
       BlocProvider<HomeBloc>(
         create: (BuildContext context) => HomeBloc(apiHelper: ApiHelper()),
+      ),
+      BlocProvider<ProductBloc>(
+        create: (BuildContext context) => ProductBloc(apiHelper: ApiHelper()),
       ),
     ],
     child: MyApp(),));

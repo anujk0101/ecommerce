@@ -5,6 +5,9 @@ import 'package:ecommerce/domain/catagory_item.dart';
 import 'package:ecommerce/ui/home/homepage_bloc/home_bloc.dart';
 import 'package:ecommerce/ui/home/homepage_bloc/home_event.dart';
 import 'package:ecommerce/ui/home/homepage_bloc/home_state.dart';
+import 'package:ecommerce/ui/home/prodoucts_bloc/product_bloc.dart';
+import 'package:ecommerce/ui/home/prodoucts_bloc/product_event.dart';
+import 'package:ecommerce/ui/home/prodoucts_bloc/product_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +18,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 String? tokanSharedPrefs;
+List<String> imgURLs=["https://opsg-img-cdn-gl.heytapimg.com/epb/202407/19/nrhD8vgWULrDyeGO.png",
+"https://4.imimg.com/data4/WI/BX/MY-24426176/lenovo-mobile.jpg",
+"https://inventstore.in/wp-content/uploads/2023/09/1-8.webp",
+"https://m.media-amazon.com/images/I/81vxWpPpgNL.jpg",
+  "https://5.imimg.com/data5/PX/MM/MY-25117810/mi-redmi-note-4-smart-phone.png",
+  "https://5.imimg.com/data5/SELLER/Default/2023/3/296178265/EX/FQ/OZ/186724856/vivo-mobile-phone.jpg"];
 //CatModel? cModel;
   @override
   void initState() {
@@ -29,6 +38,7 @@ String? tokanSharedPrefs;
     await pref.initPrefs();
      tokanSharedPrefs=pref.getUserId();
     context.read<HomeBloc>().add(FetchCategoryItemEvent(isTokan: true));
+    context.read<ProductBloc>().add(ProductFetchEvent(isTokan: true));
   }
   @override
   Widget build(BuildContext context) {
@@ -139,13 +149,14 @@ String? tokanSharedPrefs;
                               padding: EdgeInsets.only(right: 8.0),
                               child: Column(
                                 children: [
-                                /*  ClipOval(
-                                      child: Image.asset(
-                                        "${CatagoryItem.mCategories[index].catImgUrl}",
+                                  ClipOval(
+                                      child: Image.network(
+                                        "${imgURLs[index]}",
+                                        //"${CatagoryItem.mCategories[index].catImgUrl}",
                                         fit: BoxFit.cover,
                                         width: 80.0,
                                         height: 80.0,
-                                      )),*/
+                                      )),
                                   SizedBox(
                                     width: 95,
                                     child: Text(
@@ -170,7 +181,7 @@ String? tokanSharedPrefs;
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Speciall For you",
+                      "Special For you",
                       style: TextStyle(fontSize: 25),
                     ),
                     TextButton(
@@ -184,24 +195,38 @@ String? tokanSharedPrefs;
                 SizedBox(
                   height: 11,
                 ),
-                GridView.builder(
-                    itemCount: CatagoryItem.mCategories.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        childAspectRatio: 7 / 9
-                    ),
-                    itemBuilder: (_, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: AppColor.greyColor,
-                          borderRadius: BorderRadius.circular(21)
+                BlocBuilder<ProductBloc,ProductState>(builder: (_,state){
+                  if(state is ProductLoadingState){
+                    return CircularProgressIndicator();
+                  }
+                  else if(state is ProductFailedState){
+                    return Center(child: Text("${state.errorMsg}"),);
+                  } else if(state is ProductSuccessState){
+                    return GridView.builder(
+                        itemCount: state.mdata.data.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 15,
+                            childAspectRatio: 7 / 9
                         ),
-                      );
-                    })
+                        itemBuilder: (_, index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: AppColor.greyColor,
+                                borderRadius: BorderRadius.circular(21),
+                              image:DecorationImage(image:  NetworkImage(state.mdata.data[index]!.image!))
+                            ),
+                          );
+                        });
+                  }
+                  else{
+                    return Container();
+                  }
+                })
+
               ],
             ),
           ),

@@ -10,12 +10,14 @@ import '../app_pref.dart';
 class ApiHelper{
 String? token;
   //Future<dynamic> postAPI({required String url,required RegisterUserModel rUserModel}) async{
-  Future<dynamic> postAPI({required String url, Map<String,dynamic>? rUserModel}) async{
+  Future<dynamic> postAPI({required String url, Map<String,dynamic>? rUserModel,bool isHeaderRequired=false}) async{
     var uri=Uri.parse(url);
 
     try{
-
-      var res=await httpClient.post(uri,body: jsonEncode(rUserModel));
+      if(isHeaderRequired) {
+        await getTokan();
+      }
+      var res=await httpClient.post(uri,body: jsonEncode(rUserModel),headers: {"Authorization" : "Bearer ${token}"});
       return returnJsonResponse(res);
 
     } on SocketException catch(e){
@@ -23,14 +25,22 @@ String? token;
     }
   }
 
+
+Future<void> getTokan() async{
+  var pref=AppPref();
+  await pref.initPrefs();
+  token=pref.getUserId();
+}
+
   Future<dynamic> getCat({required String url, bool isHeaderRequired=false}) async{
     var uri=Uri.parse(url);
 
     try{
       if(isHeaderRequired){
-        var pref=AppPref();
+        await getTokan();
+       /* var pref=AppPref();
         await pref.initPrefs();
-        token=pref.getUserId();
+        token=pref.getUserId();*/
       }
       var res=await httpClient.get(uri,headers: {
         "Authorization" : "Bearer ${token}"
